@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MentorX — AI-Powered Educational Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080C14;
+    --bg2: #0D1320;
+    --bg3: #121A2B;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #E8EDF5;
+    --muted: #6B7A99;
+    --cyan: #00D4B4;
+    --cyan2: #00A98F;
+    --blue: #4D9EFF;
+    --purple: #A78BFA;
+    --amber: #F59E0B;
+    --font: 'Space Grotesk', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 60px;
+    background: rgba(8,12,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.1rem; font-weight: 600; color: var(--text);
+    text-decoration: none;
+  }
+  .logo-box {
+    width: 32px; height: 32px;
+    background: var(--cyan);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #080C14;
+  }
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-github {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .nav-github:hover { border-color: var(--cyan); background: rgba(0,212,180,0.05); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-github span { display: none; }
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 100px 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(0,212,180,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 30%, rgba(77,158,255,0.05) 0%, transparent 70%);
+  }
+  .grid-overlay {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    background: rgba(0,212,180,0.08);
+    border: 1px solid rgba(0,212,180,0.2);
+    border-radius: 100px;
+    font-size: 0.8rem; color: var(--cyan); font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .accent { color: var(--cyan); }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+    margin-bottom: 2.5rem; max-width: 480px;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    background: var(--cyan);
+    color: #080C14; font-weight: 600; font-size: 0.9rem;
+    border-radius: 10px; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--cyan2); transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    border: 1px solid var(--border2);
+    color: var(--text); font-weight: 500; font-size: 0.9rem;
+    border-radius: 10px; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--cyan); background: rgba(0,212,180,0.04); }
+
+  /* HERO VISUAL - Dashboard mockup */
+  .hero-visual {
+    position: relative;
+  }
+  .dashboard-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .dash-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dash-title { font-size: 0.8rem; color: var(--muted); margin-left: auto; font-family: var(--mono); }
+  .dash-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+  }
+  .dash-stat {
+    background: var(--bg2);
+    padding: 1rem;
+  }
+  .dash-stat-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; }
+  .dash-stat-value { font-size: 1.4rem; font-weight: 600; }
+  .dash-stat-sub { font-size: 0.7rem; color: var(--cyan); margin-top: 2px; }
+  .dash-body { padding: 1rem 1.25rem; }
+  .dash-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .dash-row:last-child { border-bottom: none; }
+  .dash-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .dash-row-text { flex: 1; color: var(--text); }
+  .dash-row-time { color: var(--muted); font-size: 0.72rem; font-family: var(--mono); }
+  .floating-chip {
+    position: absolute; bottom: -16px; right: -16px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .chip-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(0,212,180,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .chip-text { font-size: 0.8rem; font-weight: 600; }
+  .chip-sub { font-size: 0.7rem; color: var(--muted); }
+
+  /* SECTIONS */
+  section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700; letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    color: var(--muted); font-size: 1rem; line-height: 1.7;
+    max-width: 560px;
+  }
+  .section-header { margin-bottom: 3rem; }
+
+  /* ECOSYSTEM */
+  .ecosystem-tabs {
+    display: flex; gap: 4px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+  .eco-tab {
+    padding: 8px 20px;
+    border-radius: 9px;
+    font-size: 0.88rem; font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  .eco-tab.active {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+  .eco-tab:hover:not(.active) { color: var(--text); }
+
+  .eco-content { display: none; }
+  .eco-content.active { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+  @media (max-width: 768px) {
+    .eco-content.active { grid-template-columns: 1fr; }
+  }
+
+  .eco-info {}
+  .eco-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+  .eco-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .eco-desc { color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.95rem; }
+  .eco-stats {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .eco-stat {}
+  .eco-stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--mono); }
+  .eco-stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .eco-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .eco-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.88rem; color: var(--muted);
+  }
+  .eco-features li::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan); flex-shrink: 0;
+  }
+
+  .eco-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+  .eco-card-title { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; font-family: var(--mono); }
+  .profile-grid { display: flex; flex-direction: column; gap: 10px; }
+  .profile-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .profile-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .profile-tag {
+    font-size: 0.7rem; font-weight: 700; font-family: var(--mono);
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .profile-name { font-size: 0.85rem; font-weight: 600; }
+  .profile-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  /* RESOURCES */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .resource-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.15s;
+    display: flex; flex-direction: column; gap: 12px;
+    cursor: pointer;
+  }
+  .resource-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .resource-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .resource-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .resource-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; flex: 1; }
+  .resource-link { font-size: 0.78rem; color: var(--cyan); font-weight: 500; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  @media (max-width: 768px) {
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  .footer-brand-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .footer-brand-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+  .footer-contact { font-size: 0.8rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .footer-col-title { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-links a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+  .footer-bottom {
+    max-width: 1200px; margin: 2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-copy { font-size: 0.8rem; color: var(--muted); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-box">M</div>
+    MentorX
+  </a>
+  <ul class="nav-links">
+    <li><a href="#ecosystem">Ecosystem</a></li>
+    <li><a href="#resources">Resources</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="https://github.com/mustafatepe/mentorx" target="_blank" class="nav-github">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    <span>GitHub Repository</span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        AI-Powered CS Education
+      </div>
+      <h1>Learn smarter with <span class="accent">MentorX</span></h1>
+      <p class="hero-desc">An intelligent tutoring ecosystem for computer science students — combining Socratic dialogue, adaptive learning profiles, and real-time monitoring.</p>
+      <div class="hero-actions">
+        <a href="#ecosystem" class="btn-primary">
+          Explore Ecosystem
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="YOUR_POSTER_PDF_LINK" target="_blank" class="btn-secondary">
+          View Poster (PDF)
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="dashboard-card">
+        <div class="dash-header">
+          <div class="dash-dot" style="background:#FF5F57"></div>
+          <div class="dash-dot" style="background:#FEBC2E; margin-left:4px"></div>
+          <div class="dash-dot" style="background:#28C840; margin-left:4px"></div>
+          <span class="dash-title">MentorX Dashboard</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <div class="dash-stat-label">Active Students</div>
+            <div class="dash-stat-value" style="color:var(--cyan)">1,248</div>
+            <div class="dash-stat-sub">+12% this week</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-label">Learning Progress</div>
+            <div class="dash-stat-value" style="color:var(--blue)">78%</div>
+            <div class="dash-stat-sub">avg. completion</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-label">SFT Dialogues</div>
+            <div class="dash-stat-value" style="color:var(--purple)">2,025</div>
+            <div class="dash-stat-sub">training samples</div>
+          </div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-row">
+            <div class="dash-icon" style="background:rgba(0,212,180,0.1)">🤖</div>
+            <div class="dash-row-text">New Socratic dialogue completed</div>
+            <div class="dash-row-time">2m ago</div>
+          </div>
+          <div class="dash-row">
+            <div class="dash-icon" style="background:rgba(77,158,255,0.1)">🐍</div>
+            <div class="dash-row-text">Python CS1 lesson completed</div>
+            <div class="dash-row-time">15m ago</div>
+          </div>
+          <div class="dash-row">
+            <div class="dash-icon" style="background:rgba(167,139,250,0.1)">📐</div>
+            <div class="dash-row-text">Automata Theory quiz passed</div>
+            <div class="dash-row-time">1h ago</div>
+          </div>
+        </div>
+      </div>
+      <div class="floating-chip">
+        <div class="chip-icon">🧠</div>
+        <div>
+          <div class="chip-text">MentorX AI</div>
+          <div class="chip-sub">Socratic tutor active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section id="ecosystem">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">The Ecosystem</div>
+      <h2 class="section-title">Three components, one platform</h2>
+      <p class="section-desc">MentorX brings together intelligent tutoring, exam integrity, and automated reporting in a unified educational platform.</p>
+    </div>
+
+    <div class="ecosystem-tabs">
+      <button class="eco-tab active" onclick="switchTab('automata')">MentorX Automata</button>
+      <button class="eco-tab" onclick="switchTab('python')">MentorX Python</button>
+      <button class="eco-tab" onclick="switchTab('monitor')">MonitorAgent</button>
+    </div>
+
+    <!-- Automata -->
+    <div class="eco-content active" id="tab-automata">
+      <div class="eco-info">
+        <div class="eco-badge" style="background:rgba(0,212,180,0.1);color:var(--cyan)">Automata Theory Tutor</div>
+        <h3 class="eco-title">MentorX Automata</h3>
+        <p class="eco-desc">A fine-tuned Socratic AI tutor for Automata Theory, guiding students through DFA, NFA, CFG, and Turing Machine concepts via question-based dialogue — never giving direct answers.</p>
+        <div class="eco-stats">
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--cyan)">823</div>
+            <div class="eco-stat-label">Questions</div>
+          </div>
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--cyan)">2,025</div>
+            <div class="eco-stat-label">Dialogues</div>
+          </div>
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--cyan)">1,771</div>
+            <div class="eco-stat-label">SFT Samples</div>
+          </div>
+        </div>
+        <ul class="eco-features">
+          <li>Built on Qwen2.5-7B + QLoRA fine-tuning</li>
+          <li>Sources: TuringQ (810 Q) + LyTOC (13 Q)</li>
+          <li>LLM-as-Judge quality pipeline (Maverick)</li>
+          <li>Deployed on Modal with A10G GPU</li>
+        </ul>
+      </div>
+      <div class="eco-card">
+        <div class="eco-card-title">// learner profiles</div>
+        <div class="profile-grid">
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(0,212,180,0.15);color:var(--cyan)">FAST</div>
+              <div class="profile-name">Quick Connector</div>
+            </div>
+            <div class="profile-desc">Forms connections quickly, tends to overgeneralize. Needs challenging follow-up questions to deepen understanding.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(245,158,11,0.15);color:var(--amber)">MEM</div>
+              <div class="profile-name">Memorizer</div>
+            </div>
+            <div class="profile-desc">Relies on memorization over understanding. Struggles with transfer questions. Needs "why?" questioning.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(167,139,250,0.15);color:var(--purple)">SLOW</div>
+              <div class="profile-name">Deliberate Learner</div>
+            </div>
+            <div class="profile-desc">Learns gradually, requires structured guidance and step-by-step scaffolding. Benefits from more practice.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Python -->
+    <div class="eco-content" id="tab-python">
+      <div class="eco-info">
+        <div class="eco-badge" style="background:rgba(77,158,255,0.1);color:var(--blue)">Python CS1 Tutor</div>
+        <h3 class="eco-title">MentorX Python</h3>
+        <p class="eco-desc">A Socratic tutor for introductory Python programming, helping students debug code and understand concepts through guided discovery rather than direct solutions.</p>
+        <div class="eco-stats">
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--blue)">1,417</div>
+            <div class="eco-stat-label">Questions</div>
+          </div>
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--blue)">765</div>
+            <div class="eco-stat-label">SFT Samples</div>
+          </div>
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--blue)">9</div>
+            <div class="eco-stat-label">Topics</div>
+          </div>
+        </div>
+        <ul class="eco-features">
+          <li>Built on StarCoder2-7B fine-tuning</li>
+          <li>Sources: MBPP + CoNaLa datasets</li>
+          <li>Phase 1 (concept) + Phase 2 (debug) modes</li>
+          <li>9 topics: lists, loops, functions, dicts...</li>
+        </ul>
+      </div>
+      <div class="eco-card">
+        <div class="eco-card-title">// learner profiles</div>
+        <div class="profile-grid">
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(77,158,255,0.15);color:var(--blue)">DEEP</div>
+              <div class="profile-name">Deep Thinker</div>
+            </div>
+            <div class="profile-desc">Explores concepts in depth, asks "why" questions. Needs challenging extensions beyond surface-level understanding.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(245,158,11,0.15);color:var(--amber)">MEM</div>
+              <div class="profile-name">Memorizer</div>
+            </div>
+            <div class="profile-desc">Relies on memorization, struggles with applying concepts to new problems. Needs conceptual "why?" probing.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(167,139,250,0.15);color:var(--purple)">SEQ</div>
+              <div class="profile-name">Sequential Learner</div>
+            </div>
+            <div class="profile-desc">Prefers step-by-step guidance, gets stuck on runtime errors. Needs structured, incremental scaffolding.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monitor -->
+    <div class="eco-content" id="tab-monitor">
+      <div class="eco-info">
+        <div class="eco-badge" style="background:rgba(167,139,250,0.1);color:var(--purple)">AI Monitoring System</div>
+        <h3 class="eco-title">MonitorAgent</h3>
+        <p class="eco-desc">An AI-powered exam integrity system using computer vision and behavioral analysis to ensure academic honesty during computer-based assessments.</p>
+        <div class="eco-stats">
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--purple)">Real-time</div>
+            <div class="eco-stat-label">Analysis</div>
+          </div>
+          <div class="eco-stat">
+            <div class="eco-stat-value" style="color:var(--purple)">Groq</div>
+            <div class="eco-stat-label">Vision AI</div>
+          </div>
+        </div>
+        <ul class="eco-features">
+          <li>Chrome extension for browser monitoring</li>
+          <li>Desktop agent for system-level capture</li>
+          <li>Groq Vision AI for screenshot analysis</li>
+          <li>Real-time teacher dashboard</li>
+          <li>Flask + SocketIO backend</li>
+        </ul>
+      </div>
+      <div class="eco-card">
+        <div class="eco-card-title">// system components</div>
+        <div class="profile-grid">
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(167,139,250,0.15);color:var(--purple)">EXT</div>
+              <div class="profile-name">Browser Extension</div>
+            </div>
+            <div class="profile-desc">Chrome extension monitors active tab, detects navigation to unauthorized resources during exams.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(167,139,250,0.15);color:var(--purple)">AGT</div>
+              <div class="profile-name">Desktop Agent</div>
+            </div>
+            <div class="profile-desc">Captures screenshots and behavioral signals. Visual analysis prevents proxy spoofing via URL detection.</div>
+          </div>
+          <div class="profile-item">
+            <div class="profile-header">
+              <div class="profile-tag" style="background:rgba(167,139,250,0.15);color:var(--purple)">DSH</div>
+              <div class="profile-name">Teacher Dashboard</div>
+            </div>
+            <div class="profile-desc">Real-time alerts and session reports for instructors. Analytics on student behavior during assessments.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESOURCES -->
+<section id="resources">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label">Resources</div>
+      <h2 class="section-title">Everything in one place</h2>
+      <p class="section-desc">Access the research poster, source code, technical report, and dataset information.</p>
+    </div>
+    <div class="resources-grid">
+      <a class="resource-card" href="YOUR_POSTER_PDF_LINK" target="_blank">
+        <div class="resource-icon" style="background:rgba(0,212,180,0.1)">📄</div>
+        <div class="resource-title">Research Poster</div>
+        <div class="resource-desc">Academic poster (PDF) summarizing the MentorX ecosystem, methodology, and results.</div>
+        <div class="resource-link">Download PDF →</div>
+      </a>
+      <a class="resource-card" href="YOUR_GITHUB_LINK" target="_blank">
+        <div class="resource-icon" style="background:rgba(77,158,255,0.1)">💻</div>
+        <div class="resource-title">Source Code</div>
+        <div class="resource-desc">Complete codebase including fine-tuning pipelines, judge system, and agent architecture.</div>
+        <div class="resource-link">View on GitHub →</div>
+      </a>
+      <a class="resource-card" href="YOUR_REPORT_LINK" target="_blank">
+        <div class="resource-icon" style="background:rgba(167,139,250,0.1)">📋</div>
+        <div class="resource-title">Technical Report</div>
+        <div class="resource-desc">Detailed documentation of data pipeline, model training, and evaluation methodology.</div>
+        <div class="resource-link">View Report →</div>
+      </a>
+      <a class="resource-card" href="YOUR_DATASET_LINK" target="_blank">
+        <div class="resource-icon" style="background:rgba(245,158,11,0.1)">🗃️</div>
+        <div class="resource-title">Dataset Info</div>
+        <div class="resource-desc">Statistics and preprocessing details for TuringQ, LyTOC, MBPP, and CoNaLa sources.</div>
+        <div class="resource-link">View Details →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer id="about">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0.75rem">
+        <div class="logo-box">M</div>
+        MentorX
+      </div>
+      <p class="footer-brand-desc">An AI-powered CS education platform combining Socratic tutoring, exam monitoring, and automated reporting for university students.</p>
+      <div class="footer-contact">
+        <span>📧 mustafa.tepe@example.com</span>
+        <span>🎓 Erzurum Teknik Üniversitesi</span>
+        <span>📍 Turkey</span>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Ecosystem</div>
+      <ul class="footer-links">
+        <li><a href="#ecosystem" onclick="switchTab('automata')">MentorX Automata</a></li>
+        <li><a href="#ecosystem" onclick="switchTab('python')">MentorX Python</a></li>
+        <li><a href="#ecosystem" onclick="switchTab('monitor')">MonitorAgent</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <ul class="footer-links">
+        <li><a href="YOUR_POSTER_PDF_LINK" target="_blank">Research Poster</a></li>
+        <li><a href="YOUR_GITHUB_LINK" target="_blank">Source Code</a></li>
+        <li><a href="YOUR_REPORT_LINK" target="_blank">Technical Report</a></li>
+        <li><a href="YOUR_DATASET_LINK" target="_blank">Dataset Info</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#ecosystem">Ecosystem</a></li>
+        <li><a href="#resources">Resources</a></li>
+        <li><a href="YOUR_GITHUB_LINK" target="_blank">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 MentorX. Graduation Project — Erzurum Teknik Üniversitesi.</span>
+    <span class="footer-copy" style="color:var(--cyan)">Intelligent. Adaptive. Scalable.</span>
+  </div>
+</footer>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.eco-tab').forEach((t, i) => {
+    const names = ['automata', 'python', 'monitor'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.eco-content').forEach(c => {
+    c.classList.toggle('active', c.id === 'tab-' + name);
+  });
+}
+</script>
+</body>
+</html>
